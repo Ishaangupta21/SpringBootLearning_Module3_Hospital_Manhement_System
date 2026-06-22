@@ -7,11 +7,13 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
 @Entity
-@ToString
+@ToString(exclude = {"appointmentSet", "insurance"})
 public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,4 +32,11 @@ public class Patient {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "patient_insurance")// @JoinColumn Annotation can only be used on the owning side of the relationship mapping
+    private  Insurance insurance; // This is the owing side
+
+    @OneToMany(mappedBy = "patient")
+    private Set<Appointment> appointmentSet = new HashSet<>();
 }
